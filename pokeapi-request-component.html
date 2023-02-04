@@ -1,0 +1,46 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="pokeapi-list-component">
+  <template>
+    <iron-ajax
+        auto
+        url="https://pokeapi.co/api/v2/pokemon/"
+        handle-as="json"
+        on-response="responseData"
+        debounce-duration="300">
+    </iron-ajax>
+  </template>
+
+  <script>
+    /**
+     * `pokeapi-list-component`
+     * Lista de pokemons
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class PokeapiListComponent extends Polymer.Element {
+      static get is() { return 'pokeapi-list-component'; }
+      static get properties() {
+        return {
+          results: {
+                type: Array,
+                value: []
+            }
+        };
+      }
+      responseData(event, request){
+        this.results = request.response?.results
+        window.dispatchEvent(new CustomEvent("onRequest", {bubles: true, detail: this.results}))
+        console.warn(request.response)
+      }
+
+      dispa
+    }
+
+    window.customElements.define(PokeapiListComponent.is, PokeapiListComponent);
+  </script>
+</dom-module>
+
