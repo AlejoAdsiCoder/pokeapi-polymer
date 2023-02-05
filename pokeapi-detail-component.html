@@ -1,19 +1,14 @@
 <link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/iron-demo-helpers/demo-snippet.html">
+<link rel="import" href="./pokeapi-request-component.html">
 
-<dom-module id="pokeapi-list-component">
+<dom-module id="pokeapi-detail-component">
   <template>
-    <iron-ajax
-        auto
-        url="https://pokeapi.co/api/v2/pokemon/"
-        handle-as="json"
-        on-response="responseData"
-        debounce-duration="300">
-    </iron-ajax>
   </template>
 
   <script>
     /**
-     * `pokeapi-list-component`
+     * `pokeapi-detail-component`
      * Lista de pokemons
      *
      * @customElement
@@ -21,7 +16,7 @@
      * @demo demo/index.html
      */
     class PokeapiListComponent extends Polymer.Element {
-      static get is() { return 'pokeapi-list-component'; }
+      static get is() { return 'pokeapi-detail-component'; }
       static get properties() {
         return {
           pokemons: {
@@ -35,6 +30,6 @@
     
     }
 
-    window.customElements.define(PokeapiListComponent.is, PokeapiListComponent);
+    window.customElements.define(PokeapiDetailComponent.is, PokeapiDetailComponent);
   </script>
 </dom-module>
