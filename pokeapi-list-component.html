@@ -1,27 +1,64 @@
 <link rel="import" href="./bower_components/polymer/polymer-element.html">
 <link rel="import" href="./bower_components/iron-demo-helpers/demo-snippet.html">
 <link rel="import" href="./pokeapi-request-component.html">
-<link rel="import" href="./simple-expand-collapse.html">
+<link rel="import" href="./pokeapi-card-component.html">
 
 <dom-module id="pokeapi-list-component">
-  
-    <pokeapi-request-component></pokeapi-request-component> 
-    <demo-snippet>
-    
-      <template>
-        <simple-expand-collapse btnname="[[pokemons.detail.name]]">
-        <h1> [[pokemons.detail.name]]</h1>
-          [[pokemons.detail.url]]
-        </simple-expand-collapse>
+  <template>
+    <style>
+      .list-pokemons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        row-gap: 27px;
+      }
+
+
+    </style>
+    <pokeapi-request-component url="[[url]]" limit="[[limit]]"></pokeapi-request-component>
+    <section class="list-pokemons">
+    <dom-repeat items="{{pokemons}}">
+
+      <template class="list-pokemons">
+        <pokeapi-card-component name="{{item.name}}" image="[[item.image]]" abilities="[[item.abilities]]"></pokeapi-card-component>
       </template>
+
+      <dom-if if="[[isEqualTo(modalStatus, 'true')]]">
+        <template>
+          <div class="modal-window">
+            <div>
+          <button on-click="changeModalState" data-modal-status="false" class="btn">Close</h1>
+            <h2>Header</h2>
+            <div>Dialog body</div>
+    
+            <div class="data-list">
+              <dom-repeat items="[[abilities]]">
+                <template class="list-pokemons">
+                  <span>[[item.name]]</span>
+                </template>
+              </dom-repeat>
+            </div> 
+          </div>
+        </div>
+      </template>
+      </dom-if>
+    </dom-repeat>
+
+    </section>
+      <button class="btn" data-page-type="prev" on-click="_paginate">Anterior Pagina</button>
+      <button class="btn" data-page-type="next" on-click="_paginate">Siguiente Pagina</button>
+  <!-- Modal -->
+
   
-    </demo-snippet>
+</template>
+
+<!-- Dom moduley domrepeat deben tener siempre un template -->
   
   <script>
-    /**
+    /**ssss
      * `pokeapi-list-component`
      * Lista de pokemons
-     *
+     *  
      * @customElement
      * @polymer
      * @demo demo/index.html
@@ -32,31 +69,83 @@
         return {
           pokemons: {
                 type: Array,
-                value: []
             },
-
-          name: {
-            type: String, 
-            value: 'Sin nombre'
-          },
-
           url: {
-            type: String, 
-            value: 'Sin url'
+                type: String,
+            },
+          limit: {
+                type: Number,
+                value: 0
+            },
+          prev: {
+            type: String,
+            value: '',
           },
+          next: {
+            type: String,
+            value: '',
+          },
+          modalStatus: {
+            type: Boolean,
+            value: false
+            
+          }
         };
       }
-
+      constructor(){
+        super();
+        this.limit = 30;
+        this.url = `https://pokeapi.co/api/v2/pokemon?offset=0&limit=${this.limit}`;
+      }
       //Este componente recibe la data del evento de poque-request-component
       //El connectedCallback es IGUAL a USEEFFECT
       connectedCallback(){
         super.connectedCallback();
-        window.addEventListener('onRequest', (event) => this.perro(event))
+        window.addEventListener('onRequest', (event) => this.responseData(event))
+        window.addEventListener('modal', (event) => this.changeModalState(event))
       }
-      perro(event){
-        this.pokemons = event;
+      responseData(event){
+        this.pokemons = event?.detail.data;
+        this.next = event?.detail.next;
+        this.prev = event?.detail.prev
         console.log(this.pokemons)
       }
+
+      onPrevButton() {
+        this.url = this.prev
+      }
+
+      onNextButton() {
+        this.url = this.next
+      }
+
+      _paginate(event) {
+        let type = event.target.getAttribute('data-page-type');
+        this._ChangePage(type);
+      }
+
+      _ChangePage(type) {
+        type === 'next' ? this.url = this.next : this.url = this.prev
+      }
+
+      changeModalState(e) {
+        console.log('changeModalState', e)
+        let modalStatus = e.detail;
+        console.log("changeModalState", modalStatus)
+        this.modalStatus === true ? this.modalStatus = 'true' : this.modalStatus = 'false';
+      }
+
+      isEqualTo(modal, status) {
+        console.log('modal',modal);
+        console.log('status',status);
+        return modal === status; 
+      }
+
+      /* getmodalstatus(e){
+        this.modalStatus = e.detail
+        console.log('getmodalstatus', e.detail)
+      } */
+
 
     }
 

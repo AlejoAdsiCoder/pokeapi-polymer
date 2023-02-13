@@ -1,0 +1,207 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/iron-demo-helpers/demo-pages-shared-styles.html">
+<link rel="import" href="./bower_components/iron-demo-helpers/demo-snippet.html">
+<link rel="import" href="./pokeapi-list-component.html">
+<link rel="import" href="./simple-expand-collapse.html">
+<link rel="import" href="./simple-expand-collapse.html">
+<link rel="import" href="./bower_components/paper-card/paper-card.html">
+<link rel="import" href="./bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<custom-style>
+  <style is="custom-style" include="demo-pages-shared-styles">
+    card {
+      background-color: #fff;
+      border-radius: 0.5rem;
+      box-shadow: 0.05rem 0.1rem 0.3rem -0.03rem rgba(0, 0, 0, 0.45);
+      padding-bottom: 1rem;
+      background-image: linear-gradient(
+        var(--card-gradient),
+        white max(9.5rem, 27vh)
+      );
+      overflow: hidden;
+    }
+    
+  </style>
+</custom-style>
+
+<dom-module id="pokeapi-card-component">
+  <template>
+    <style>
+      .modal-window {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.7);
+        opacity: 0;
+        animation: modal-show 0.5s 1 forwards;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px;
+        background-color: #8bb02c;
+        color: white;
+        font-size: 18px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        text-decoration: none;
+      }
+
+      @keyframes modal-show {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+
+      .card {
+        background-color: #fff;
+        border-radius: 0.5rem;
+        box-shadow: 0.05rem 0.1rem 0.3rem -0.03rem rgba(0, 0, 0, 0.45);
+        padding-bottom: 1rem;
+        background-image: linear-gradient(
+          var(--card-gradient),
+          white max(9.5rem, 27vh)
+        );
+        overflow: hidden;
+      }
+
+      .card {
+        display:
+      }
+
+      img {
+        border-radius: 0.5rem 0.5rem 0 0;
+        width: 100%;
+        object-fit: cover;
+        height: max(10rem, 25vh);
+        max-height: max(10rem, 30vh);
+        aspect-ratio: 4/3;
+        mix-blend-mode: var(--card-blend-mode);
+      }
+
+      .card-wrapper {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(30ch, 1fr));
+        grid-gap: 1.5rem;
+        max-width: 100vw;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        justify-content: center;
+      }
+
+  
+    </style>
+    <!-- <demo-snippet> -->
+    <section class="card-wrapper">
+      
+        <div class="card">
+          <section>
+          <img src="[[image]]" alt="[[name]]">
+            <button on-click="changeModalState" data-modal-status="true" class="btn">  [[name]]
+            </button>
+          </section>
+          
+          <dom-if if="[[isEqualTo(modalStatus, 'true')]]">
+            <template>
+              <div class="modal-window">
+                <div>
+              <button on-click="changeModalState" data-modal-status="false" class="btn">Close</h1>
+                <h2>Header</h2>
+                <div>Dialog body</div>
+      
+                <div class="data-list">
+                  <dom-repeat items="[[abilities]]">
+                    <template class="list-pokemons">
+                      <span>[[item.name]]</span>
+                    </template>
+                  </dom-repeat>
+                </div> 
+              </div>
+            </div>
+          </template>
+          </dom-if>
+       
+        </div>
+        
+        
+        
+    </section>
+      
+    
+
+    <!-- <simple-expand-collapse btname="[[name]]">
+    </simple-expand-collapse> -->
+    <!-- </demo-snippet> -->
+  </template>
+
+  <script>
+    /**
+     * `pokeapi-card-component`
+     * Lista de pokemons
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class PokeapiCardComponent extends Polymer.Element {
+      static get is() { return 'pokeapi-card-component'; }
+      static get properties() {
+        return {
+          image: {
+            type: String
+          },
+          name: {
+            type: String, 
+            value: 'Sin nombre'
+          },
+
+          url: {
+            type: String, 
+            value: 'Sin url'
+          },
+          abilities: {
+            type: Array,
+            value: []
+          },
+          modalStatus: {
+            type: Boolean,
+            value: false,
+            notify: true
+            
+          }
+        }
+      }
+
+      isEqualTo(modal, status) {
+      // console.log('modal',modal);
+      // console.log('status',status);
+        return modal === status; 
+      }
+
+      changeModalState(e) {
+        console.log(e.target.getAttribute('data-modal-status'))
+        let status = e.target.getAttribute('data-modal-status');
+        console.log(typeof status)
+         status === 'true' ? this.modalStatus = 'true' : this.modalStatus = 'false';
+      }
+/* 
+      ready() {
+        super.ready();
+        let modal = document.getElementById("modal-window");
+        console.log(modal)
+      }
+
+      connectedCallback() {
+        let modal = document.getElementById("modal-window");
+        console.log(modal)
+      } */
+      
+    }
+
+    window.customElements.define(PokeapiCardComponent.is, PokeapiCardComponent);
+  </script>
+</dom-module>

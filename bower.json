@@ -4,7 +4,10 @@
   "main": "pokeapi-list-component.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
-    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^3.0.1"
+    "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^3.0.1",
+    "paper-card": "PolymerElements/paper-card#^3.0.1",
+    "paper-dialog-behavior": "PolymerElements/paper-dialog-behavior#^3.0.1",
+    "iron-overlay-behavior": "PolymerElements/iron-overlay-behavior#^3.0.3"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",

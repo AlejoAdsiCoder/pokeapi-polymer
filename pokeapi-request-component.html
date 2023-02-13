@@ -1,22 +1,17 @@
-<link rel="import" href="./bower_components/polymer/polymer-element.html">
+   <link rel="import" href="./bower_components/polymer/polymer-element.html">
 <link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./pokeapi-list-component.html">
 
 <dom-module id="pokeapi-request-component">
   <template>
-    <iron-ajax
-        auto
-        url="https://pokeapi.co/api/v2/pokemon/"
-        handle-as="json"
-        on-response="responseData"
-        debounce-duration="300">
+    <iron-ajax auto url="[[url]]" handle-as="json" on-response="responseData" debounce-duration="300">
     </iron-ajax>
-    <!-- <template is="dom-repeat" items=[[results]]>
-      <pokeapi-list-component
-        nombre="[[items.name]]"
-        url="[[items.url]]"
-      ></pokeapi-list-component>
-    </template> -->
+    <dom-repeat items="{{results}}">
+      <template>
+        <iron-ajax auto url="[[item.url]]" handle-as="json" on-response="responseDataDetail" debounce-duration="300">
+        </iron-ajax>
+      </template>
+    </dom-repeat>
   </template>
 
   <script>
@@ -32,20 +27,64 @@
       static get is() { return 'pokeapi-request-component'; }
       static get properties() {
         return {
+          url: {
+            type: String
+          },
           results: {
-                type: Array,
-                value: []
-            }
+            type: Array,
+            value: []
+          },
+          limit: {
+            type: Number
+          },
+          nPokemons: {
+            type: Array,
+            value: []
+          },
+          modalStatus: {
+            type: Boolean,
+            value: false,
+            notify: true
+            
+          }
         };
       }
-      responseData(event, request){
+
+      responseData(event, request) {
         this.results = request.response?.results
-        window.dispatchEvent(new CustomEvent("onRequest", {bubbles: true, detail: this.results}))
-        console.warn(request.response)
+        this.next = request.response.next
+        this.previous = request.response?.previous
+        console.log(request.response)
+      }
+
+      responseDataDetail(event, request) {
+        if (request.status === 200) {
+          //console.log(request.response)
+          let Detail = []
+          let arrayRequest = [request.response];
+          arrayRequest.map((obj) => { 
+            Detail.push({
+              id: obj.id,
+              name: obj.name,
+              image: obj.sprites.front_default,
+              abilities: obj.abilities.map((ability) => ability.ability)
+            })
+          });
+          this.nPokemons.push(Detail[0])
+          if (this.nPokemons.length === this.limit) {
+            window.dispatchEvent(new CustomEvent("onRequest", { bubbles: true, detail: {next: this.next, previous: this.previous, data: this.nPokemons} }))
+          }
+        }
+      }
+
+      
+      updated(properties) {
+        if(properties.has('url')) {
+          console.log(properties.get("url"));
+        }
       }
     }
 
     window.customElements.define(PokeapiRequestComponent.is, PokeapiRequestComponent);
   </script>
 </dom-module>
-
